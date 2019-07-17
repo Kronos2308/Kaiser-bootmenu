@@ -187,7 +187,9 @@ int tool_CFW(void* param)
 {
 if (!sd_mount()){BootStrapNX();}//check sd
 
-	//reactivate emummc
+	//reactivate EmuMMC
+if (sd_file_exists("emummc/emummc.ini"))
+{
 	if(retir == 0)
 	{
 		char *str1 = sd_file_read("emummc/emummc.ini");
@@ -199,6 +201,7 @@ if (!sd_mount()){BootStrapNX();}//check sd
 		sd_save_to_file(payload_wo_bin,size,"emummc/emummc.ini");
 		retir = 1;
 	}
+}
 	if(sd_file_exists("license.txt"))
 	sd_save_to_file("",0,"atmosphere/titles/0100000000001000/fsmitm.flag");
 	
