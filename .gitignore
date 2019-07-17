@@ -1,0 +1,9 @@
+# Visual Studio Code
+.vs/
+.vscode/
+img/*
+
+# Build files
+build/
+output/
+logo_bmp.h
