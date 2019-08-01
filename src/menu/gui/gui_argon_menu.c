@@ -96,6 +96,14 @@ void gui_init_argon_boot(void)
 			u32 size = strlen(str)-1;
 			sd_save_to_file(str,size,"emummc/emummc.ini");
 			}
+			
+			//reactivate EmuMMC
+			if(strstr(str," ") != NULL)
+			{
+			str = str_replace(str, "enabled=0", "enabled=1");
+			u32 size = strlen(str)-1;
+			sd_save_to_file(str,size,"emummc/emummc.ini");
+			}
 
 			//indicate emummc ON
 			if(strstr(str,"enabled=1") != NULL)
@@ -187,21 +195,6 @@ int tool_CFW(void* param)
 {
 if (!sd_mount()){BootStrapNX();}//check sd
 
-	//reactivate EmuMMC
-if (sd_file_exists("emummc/emummc.ini"))
-{
-	if(retir == 0)
-	{
-		char *str1 = sd_file_read("emummc/emummc.ini");
-		char* payload_wo_bin = str_replace(str1, "enabled=0", "enabled=1");
-		FIL op;
-		f_open(&op, "emummc/emummc.ini", FA_READ);
-		u32 size = f_size(&op);
-		f_close(&op);
-		sd_save_to_file(payload_wo_bin,size,"emummc/emummc.ini");
-		retir = 1;
-	}
-}
 	if(sd_file_exists("license.txt"))
 	sd_save_to_file("",0,"atmosphere/titles/0100000000001000/fsmitm.flag");
 	
