@@ -214,16 +214,22 @@ u32 letY = 380;
 			burntFuses++;
 	}
 	char *mindowngrade = "unknow";
-	if(burntFuses == 1){mindowngrade = "1.0.0";}
-	if(burntFuses == 2){mindowngrade = "2.0.0";}
-	if(burntFuses == 3){mindowngrade = "3.0.0";}
-	if(burntFuses == 4){mindowngrade = "3.0.1";}
-	if(burntFuses == 5){mindowngrade = "4.0.0";}
-	if(burntFuses == 6){mindowngrade = "5.0.0";}
-	if(burntFuses == 7){mindowngrade = "6.0.0";}
-	if(burntFuses == 8){mindowngrade = "6.2.0";}
-	if(burntFuses == 9){mindowngrade = "7.0.0";}
-	if(burntFuses == 10){mindowngrade = "8.1.0";}
+	switch (burntFuses)
+	{
+            case 1:mindowngrade = "1.0.0"; break;
+            case 2:mindowngrade = "2.0.0";break;
+            case 3:mindowngrade = "3.0.0";break;
+            case 4:mindowngrade = "3.0.1";break;
+            case 5:mindowngrade = "4.0.0";break;
+            case 6:mindowngrade = "5.0.0";break;
+            case 7:mindowngrade = "6.0.0";break;
+            case 8:mindowngrade = "6.2.0";break;
+            case 9:mindowngrade = "7.0.0";break;
+            case 10:mindowngrade = "8.1.0";break;
+            case 11:mindowngrade = "9.0.0";break;
+            default:mindowngrade = "unknow";
+	}  
+
 display_backlight_brightness(0, 1000);
 	while (true) {
 		max17050_get_property(MAX17050_RepSOC, (int *)&battPercent);

@@ -74,6 +74,8 @@ void ipl_main()
     /* Mount Sd card and init */
     if (sd_mount())
     {
+		f_chmod("switch/mercury", AM_ARC, AM_ARC);
+		f_unlink("/atmosphere/contents/0100000000001000/romfs/lyt/Entrance.szs");//9.0.0 Theme suport	
         gui_init_argon_boot();
     } else {
         gfx_printf(&g_gfx_con, "No sd card found...\n");

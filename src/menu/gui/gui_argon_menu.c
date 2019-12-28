@@ -67,6 +67,7 @@ int tool_CFW(void* param);
 static int tool_emu(u32 param);
 static int tool_reboot_rcm(void* param);
 static int tool_power_off(void* param);
+void hekateOFW(u32 tipo);
 
 /* Init needed menus for ArgonNX */
 void gui_init_argon_boot(void)
@@ -148,12 +149,14 @@ if (!sd_mount()){BootStrapNX();}//check sd
 
 	//create menu entries
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/boot-CFW.bmp"),iconX, iconY, iconW, iconH, tool_CFW ,NULL));
-	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/boot-Stock.bmp"),iconX + 350, iconY, iconW, iconH, (int (*)(void *))launch_payload, (void*)"atmosphere/boot_menu/bin/stock.bin"));
-	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/gear.bmp"),iconX + 700, iconY, iconW, iconH,(int (*)(void *))launch_payload, (void*)"atmosphere/boot_menu/bin/zBackup.bin"));
+	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/boot-Stock.bmp"),iconX + 350, iconY, iconW, iconH, (int (*)(void *))hekateOFW, (void*)1));
+	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/gear.bmp"),iconX + 700, iconY, iconW, iconH,(int (*)(void *))hekateOFW, (void*)0));
 
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/poweroff.bmp"),buttonX+5-30,buttonY, buttonH, buttonW,tool_power_off, NULL));
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/screenshot.bmp"), buttonX+5 + 350, buttonY, buttonH, buttonW,(int (*)(void *))screenshot, NULL));
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/reboot.bmp"),buttonX+5 + 730, buttonY, buttonH, buttonW, tool_reboot_rcm, NULL));//655
+	
+	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/ex-sd.bmp"),buttonX+5 + 730+100, buttonY-100, buttonH, buttonW, (int (*)(void *))BootStrapNX, NULL));//655
 
 	if (sd_file_exists("emummc/emummc.ini"))
 	{
@@ -165,6 +168,8 @@ if (!sd_mount()){BootStrapNX();}//check sd
 
 
 //gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/power.bmp"),900, 645,buttonH, 12, tool_power_off, NULL));//655
+
+
 
 //menu int
 display_backlight_brightness(100, 1000);
@@ -226,10 +231,7 @@ if (!sd_mount()){BootStrapNX();}//check sd
 
 //https://www.fullserieshd.com/series/descargar-serie-virtual-hero-por-mega/
 
-if(sd_file_exists("device.keys"))
 launch_payload("atmosphere/boot_menu/bin/Atmosphere.bin");
-else
-launch_payload("atmosphere/boot_menu/bin/Lockpick_RCM.bin");
 return 0;
 }
 
@@ -265,4 +267,16 @@ if (!sd_mount()){BootStrapNX();}//check sd
 gfx_swap_buffer(&g_gfx_ctxt);
 	gui_init_argon_menu();
 return 0;
+}
+
+void hekateOFW(u32 tipo)
+{
+if (!sd_mount()){BootStrapNX();}//check sd
+	if(tipo == 0)
+		copyfile("bootloader/hekate_ipl.bak","bootloader/hekate_ipl.ini");
+
+	if(tipo == 1)
+		copyfile("bootloader/stock","bootloader/hekate_ipl.ini");
+	
+launch_payload("atmosphere/boot_menu/bin/zHekate.bin");
 }
