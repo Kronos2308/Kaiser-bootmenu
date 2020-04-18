@@ -37,7 +37,7 @@
 #define PATH_ENABLE_TOUCH "argon/touch"
 
 extern void pivot_stack(u32 stack_top);
-
+u32 BUILD_VER = LOAD_BUILD_VER;
 static inline void setup_gfx()
 {
     u32 *fb = display_init_framebuffer();
@@ -76,7 +76,8 @@ void ipl_main()
     {
 		f_chmod("switch/mercury", AM_ARC, AM_ARC);
 		f_unlink("/atmosphere/contents/0100000000001000/romfs/lyt/Entrance.szs");//9.0.0 Theme suport	
-        gui_init_argon_boot();
+		gui_init_argon_menu();
+		gui_init_argon_boot();
     } else {
         gfx_printf(&g_gfx_con, "No sd card found...\n");
     }

@@ -44,6 +44,8 @@ void reboot_normal(void);
 void reboot_rcm(void);
 void power_off(void);
 void BootStrapNX();
+u32 fusesB();
+char *fusesM();
 /* This is a faster implementation of memcmp that checks two u32 values */
 /* every 128 Bytes block. Intented only for Backup and Restore          */
 u32 memcmp32sparse(const u32 *buf1, const u32 *buf2, u32 len);

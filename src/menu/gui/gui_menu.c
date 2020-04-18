@@ -31,6 +31,7 @@
 #include "utils/fs_utils.h"
 #define MINOR_VERSION 1
 #define MAJOR_VERSION 0
+extern u32 BUILD_VER;
 char Sversion[4];
 
 /* Render the menu */
@@ -73,22 +74,31 @@ static void gui_menu_draw_background(gui_menu_t* menu)
     /* Render title */
     if (!render_custom_title(menu->custom_gui)) 
     {
-	char *str;
-		if (g_sd_mounted){
-			void *buf;
-			buf = sd_file_read("Kaiser.txt");
-			str = buf;
-			Sversion[0] = str[0];
-			Sversion[1] = str[1];
-			Sversion[2] = str[2];
-			//Sversion[3] = str[3];
-		}	
-	gfx_con_setpos(&g_gfx_con, 1050, 5);
-	gfx_printf(&g_gfx_con, "Kaiser v%s", Sversion);
+	if (sd_file_exists("Kaiser.txt"))
+	{
+		char *str;
+			if (g_sd_mounted){
+				void *buf;
+				buf = sd_file_read("Kaiser.txt");
+				str = buf;
+				Sversion[0] = str[0];
+				Sversion[1] = str[1];
+				Sversion[2] = str[2];
+				//Sversion[3] = str[3];
+			}
+		if (strlen(Sversion) != 0){
+		gfx_con_setpos(&g_gfx_con, 1050, 5);
+		gfx_printf(&g_gfx_con, "Kaiser v%s", Sversion);
+		}
+	}
+	u32 burntFuses = fusesB();
+	char* mindowngrade = fusesM();
 
-       // g_gfx_con.scale = 4;
-       // gfx_con_setpos(&g_gfx_con, 480, 20);
-       // gfx_printf(&g_gfx_con, "ArgonNX v%d.%d", MAJOR_VERSION, MINOR_VERSION);
+		gfx_con_setcol(&g_gfx_con, 0xFFCCCCCC, 0xFFCCCCCC, 0xFF191414);
+       g_gfx_con.scale = 2;
+       gfx_con_setpos(&g_gfx_con, 1, 1);
+		gfx_printf(&g_gfx_con,"%k%d%k-%k%d%k-%k%s%k\n\n",0xFF00FF22, BUILD_VER ,0xFFCCCCCC, 0xFFea2f1e, burntFuses ,0xFFCCCCCC ,0xFF331ad8 ,mindowngrade ,0xFFCCCCCC);
+		gfx_con_setcol(&g_gfx_con, 0xFFF9F9F9, 0, 0xFF191414);
     }
 }
 

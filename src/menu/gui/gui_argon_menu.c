@@ -109,6 +109,9 @@ void gui_init_argon_boot(void)
 			//indicate emummc ON
 			if(strstr(str,"enabled=1") != NULL)
 			{retir = 1;}
+			//indicate emummc OFF
+			if(strstr(str,"enabled=0") != NULL)
+			{retir = 2;}
 	}
 
 	
@@ -119,7 +122,7 @@ void gui_init_argon_boot(void)
 	if(retir == 1)
 	tool_CFW(NULL);
 	
-	if (sd_file_exists("license.txt"))
+	if (sd_file_exists("license.txt")&(retir != 2))
 	tool_CFW(NULL);
 	}
 
@@ -148,22 +151,24 @@ if (!sd_mount()){BootStrapNX();}//check sd
 	buttonX = iconX;
 
 	//create menu entries
+	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read(""), 1, 1, 35, 35,(int (*)(void *))screenshot, NULL));
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/boot-CFW.bmp"),iconX, iconY, iconW, iconH, tool_CFW ,NULL));
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/boot-Stock.bmp"),iconX + 350, iconY, iconW, iconH, (int (*)(void *))hekateOFW, (void*)1));
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/gear.bmp"),iconX + 700, iconY, iconW, iconH,(int (*)(void *))hekateOFW, (void*)0));
 
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/poweroff.bmp"),buttonX+5-30,buttonY, buttonH, buttonW,tool_power_off, NULL));
-	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/screenshot.bmp"), buttonX+5 + 350, buttonY, buttonH, buttonW,(int (*)(void *))screenshot, NULL));
+//	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/screenshot.bmp"), buttonX+5 + 350, buttonY, buttonH, buttonW,(int (*)(void *))screenshot, NULL));
 	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/reboot.bmp"),buttonX+5 + 730, buttonY, buttonH, buttonW, tool_reboot_rcm, NULL));//655
 	
-	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/ex-sd.bmp"),buttonX+5 + 730+100, buttonY-100, buttonH, buttonW, (int (*)(void *))BootStrapNX, NULL));//655
+//	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/ex-sd.bmp"),buttonX+5 + 730+100, buttonY-100, buttonH, buttonW, (int (*)(void *))BootStrapNX, NULL));//655
+	gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/ex-sd.bmp"),buttonX+5 + 350, buttonY, buttonH, buttonW, (int (*)(void *))BootStrapNX, NULL));//655
 
 	if (sd_file_exists("emummc/emummc.ini"))
 	{
 		if(retir == 1)
-		gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/button.bmp"),buttonX+5-30,120, buttonH, buttonW,(int (*)(void *))tool_emu, (void*)0)); //630
+		gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/button.bmp"),iconX+355,115, buttonH, buttonW,(int (*)(void *))tool_emu, (void*)0)); //630
 		else
-		gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/buttoff.bmp"),buttonX+5-30,120, buttonH, buttonW,(int (*)(void *))tool_emu, (void*)1)); //630
+		gui_menu_append_entry(menu,gui_create_menu_entry("",sd_file_read("atmosphere/boot_menu/gfx/buttoff.bmp"),iconX+355,115, buttonH, buttonW,(int (*)(void *))tool_emu, (void*)1)); //630
 	}
 
 
@@ -201,7 +206,6 @@ int tool_CFW(void* param)
 if (!sd_mount()){BootStrapNX();}//check sd
 
 	if(sd_file_exists("license.txt"))
-	sd_save_to_file("",0,"atmosphere/titles/0100000000001000/fsmitm.flag");
 	
 	//panic
 	if (btn_read() & BTN_VOL_DOWN)
@@ -209,13 +213,13 @@ if (!sd_mount()){BootStrapNX();}//check sd
 	gfx_clear_color(&g_gfx_ctxt, 0xFFFFFFFF);
 	gfx_swap_buffer(&g_gfx_ctxt);
 		msleep(2000);
-	f_unlink("/atmosphere/titles/0100000000001000/fsmitm.flag");	
+	f_unlink("/atmosphere/contents/0100000000001000/fsmitm.flag");	
 	//this is a panic option so i will disable the servises also
-	f_unlink("/atmosphere/titles/420000000000000E/flags/boot2.flag");
-	f_unlink("/atmosphere/titles/0100000000000352/flags/boot2.flag");
-	f_unlink("/atmosphere/titles/4200000000000010/flags/boot2.flag");
-	f_unlink("/atmosphere/titles/420000000000000B/flags/boot2.flag");
-	f_unlink("/atmosphere/titles/0100000000000FAF/flags/boot2.flag");
+	f_unlink("/atmosphere/contents/420000000000000E/flags/boot2.flag");
+	f_unlink("/atmosphere/contents/0100000000000352/flags/boot2.flag");
+	f_unlink("/atmosphere/contents/4200000000000010/flags/boot2.flag");
+	f_unlink("/atmosphere/contents/420000000000000B/flags/boot2.flag");
+	f_unlink("/atmosphere/contents/0100000000000FAF/flags/boot2.flag");
 	}
 	
 	//Activate AutoBoot
@@ -228,8 +232,6 @@ if (!sd_mount()){BootStrapNX();}//check sd
 				f_puts("Delete this file to Disable Autoboot", &fp);
 				f_close(&fp);
 	}
-
-//https://www.fullserieshd.com/series/descargar-serie-virtual-hero-por-mega/
 
 launch_payload("atmosphere/boot_menu/bin/Atmosphere.bin");
 return 0;
@@ -273,10 +275,10 @@ void hekateOFW(u32 tipo)
 {
 if (!sd_mount()){BootStrapNX();}//check sd
 	if(tipo == 0)
-		copyfile("bootloader/hekate_ipl.bak","bootloader/hekate_ipl.ini");
+		copyfile("atmosphere/boot_menu/ini/hekate_ipl.conf","bootloader/hekate_ipl.ini");
 
 	if(tipo == 1)
-		copyfile("bootloader/stock","bootloader/hekate_ipl.ini");
+		copyfile("atmosphere/boot_menu/ini/stock","bootloader/hekate_ipl.ini");
 	
 launch_payload("atmosphere/boot_menu/bin/zHekate.bin");
 }
